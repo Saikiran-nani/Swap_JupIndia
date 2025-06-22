@@ -3,6 +3,7 @@ import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { ArrowLeft, Zap, CheckCircle, XCircle, ExternalLink } from 'lucide-react';
 import { VersionedTransaction, Transaction } from '@solana/web3.js';
+import { Buffer } from 'buffer';
 import { QuoteResponse } from '../types/jupiter';
 import { JupiterApiService } from '../services/jupiterApi';
 import SwapForm from './SwapForm';
@@ -42,7 +43,25 @@ const SwapInterface: React.FC<SwapInterfaceProps> = ({ onBackToHome }) => {
       });
 
       // 2. Deserialize the transaction
-      const swapTransactionBuf = Buffer.from(swapTransaction, 'base64');
+      let swapTransactionBuf: Uint8Array;
+      
+      try {
+        // Try using Buffer if available
+        if (typeof Buffer !== 'undefined') {
+          swapTransactionBuf = Buffer.from(swapTransaction, 'base64');
+        } else {
+          // Fallback: decode base64 manually
+          const binaryString = atob(swapTransaction);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          swapTransactionBuf = bytes;
+        }
+      } catch (error) {
+        console.error('Error decoding base64 transaction:', error);
+        throw new Error('Failed to decode transaction data');
+      }
       
       let transaction;
       try {
