@@ -1,0 +1,113 @@
+{
+  "name": "jupiter-api-mcp",
+  "version": "1.0.0",
+  "description": "Machine Context Prompt for Jupiter APIs - Solana's leading DEX aggregator",
+  "context": {
+    "jupiter_api_overview": {
+      "description": "Jupiter is Solana's leading DEX aggregator that provides the best swap routes across multiple DEXs",
+      "base_url": "https://quote-api.jup.ag/v6",
+      "key_features": [
+        "Multi-DEX aggregation",
+        "Best route finding",
+        "Price quotes",
+        "Swap execution",
+        "Token list management"
+      ]
+    },
+    "core_endpoints": {
+      "quote": {
+        "url": "/quote",
+        "method": "GET",
+        "description": "Get the best swap quote for a token pair",
+        "parameters": {
+          "inputMint": "Input token mint address",
+          "outputMint": "Output token mint address", 
+          "amount": "Amount in lamports (smallest unit)",
+          "slippageBps": "Slippage tolerance in basis points",
+          "onlyDirectRoutes": "Boolean for direct routes only",
+          "asLegacyTransaction": "Boolean for legacy transaction format"
+        }
+      },
+      "swap": {
+        "url": "/swap",
+        "method": "POST",
+        "description": "Execute a swap transaction",
+        "body": {
+          "quoteResponse": "Quote response from /quote endpoint",
+          "userPublicKey": "User's public key",
+          "wrapUnwrapSOL": "Boolean to wrap/unwrap SOL automatically"
+        }
+      },
+      "tokens": {
+        "url": "/tokens",
+        "method": "GET", 
+        "description": "Get list of all supported tokens"
+      },
+      "indexed-route-map": {
+        "url": "/indexed-route-map",
+        "method": "GET",
+        "description": "Get indexed route map for efficient routing"
+      }
+    },
+    "common_tokens": {
+      "SOL": "So11111111111111111111111111111111111111112",
+      "USDC": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "USDT": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+      "BONK": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+      "JUP": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN"
+    },
+    "error_handling": {
+      "common_errors": [
+        "Insufficient liquidity",
+        "Slippage tolerance exceeded", 
+        "Invalid token pair",
+        "Network congestion",
+        "Invalid public key"
+      ],
+      "status_codes": {
+        "200": "Success",
+        "400": "Bad request - check parameters",
+        "404": "Route not found",
+        "429": "Rate limit exceeded",
+        "500": "Internal server error"
+      }
+    },
+    "best_practices": [
+      "Always check quote before executing swap",
+      "Use appropriate slippage tolerance (1-5%)",
+      "Handle rate limiting with exponential backoff",
+      "Validate token addresses before API calls",
+      "Use indexed route map for better performance",
+      "Implement proper error handling for failed swaps"
+    ],
+    "rate_limits": {
+      "quotes": "100 requests per minute",
+      "swaps": "10 requests per minute",
+      "tokens": "1000 requests per minute"
+    }
+  },
+  "examples": {
+    "get_quote": {
+      "description": "Get a quote for swapping 1 SOL to USDC",
+      "request": {
+        "method": "GET",
+        "url": "https://quote-api.jup.ag/v6/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=1000000000&slippageBps=50"
+      }
+    },
+    "execute_swap": {
+      "description": "Execute a swap using quote response",
+      "request": {
+        "method": "POST",
+        "url": "https://quote-api.jup.ag/v6/swap",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "quoteResponse": "quote_response_object",
+          "userPublicKey": "user_public_key",
+          "wrapUnwrapSOL": true
+        }
+      }
+    }
+  }
+} 
