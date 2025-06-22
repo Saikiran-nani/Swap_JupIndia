@@ -2,6 +2,10 @@ declare module 'crypto-browserify';
 declare module 'stream-browserify';
 declare module 'process';
 
+interface ImportMeta {
+  readonly env: Record<string, string>;
+}
+
 declare global {
   interface Window {
     Buffer: typeof Buffer;

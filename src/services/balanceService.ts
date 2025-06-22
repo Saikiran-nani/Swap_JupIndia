@@ -4,12 +4,12 @@ import { Token } from '../types/jupiter';
 // Get the Helius API key from environment variables
 const HELIUS_API_KEY = import.meta.env.VITE_HELIUS_API_KEY;
 
-if (!HELIUS_API_KEY) {
-  throw new Error("VITE_HELIUS_API_KEY is not defined. Please add it to your .env file.");
-}
+// Use Helius RPC if API key is available, otherwise fallback to public RPC
+const RPC_ENDPOINT = HELIUS_API_KEY 
+  ? `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`
+  : 'https://api.mainnet-beta.solana.com'; // Public RPC fallback
 
-// Using a more reliable public RPC endpoint to avoid 403 errors
-const RPC_ENDPOINT = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
+console.log('Using RPC endpoint:', HELIUS_API_KEY ? 'Helius (with API key)' : 'Public RPC (fallback)');
 
 export class BalanceService {
   private static connection = new Connection(RPC_ENDPOINT, 'confirmed');
